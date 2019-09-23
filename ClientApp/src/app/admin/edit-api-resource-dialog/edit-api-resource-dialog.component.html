@@ -1,0 +1,14 @@
+<p>Api Resource</p>
+<div mat-dialog-content>
+    <app-api-resource-editor ></app-api-resource-editor>
+</div>
+
+<button *ngIf="canManageApi" mat-raised-button (click)="save()" color="primary">
+    Save
+</button>
+<button *ngIf="canManageApi" mat-raised-button (click)="cancel()" color="warn">
+    Cancel
+</button>
+<button *ngIf="!canManageApi" mat-raised-button (click)="cancel()">
+    Close
+</button>

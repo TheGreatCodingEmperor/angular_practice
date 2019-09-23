@@ -1,0 +1,134 @@
+<div id="app_container" [class.is-mobile]="mobileQuery.matches" class="nav-container">
+
+  <mat-toolbar ngPreserveWhitespaces color="primary" class="app-toolbar">
+    <button mat-icon-button (click)="mainNav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1 class="app-name"><a routerLink="/" class="appTitle">{{appTitle}}</a></h1>
+    <span class="app-toolbar-spacer"></span>
+    <app-theme-picker tooltip="{{'mainMenu.Theme' | translate}}"></app-theme-picker>
+
+    <button *ngIf="!isUserLoggedIn" mat-button (click)="router.navigateByUrl('/login')">
+      <mat-icon>lock_open</mat-icon>
+      <span>{{'mainMenu.Login' | translate}}</span>
+    </button>
+
+    <button *ngIf="isUserLoggedIn" class="side-button" mat-button [matMenuTriggerFor]="accountMenu"
+      matTooltip="{{'mainMenu.UserAccount' | translate}}">
+      <span class="oi oi-box exentric-icon" title="box" aria-hidden="true"></span>
+      <span fxHide.lt-sm>{{'mainMenu.Account' | translate}}</span>
+    </button>
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item (click)="router.navigateByUrl('/settings')">
+        <span class="oi oi-grid-three-up exentric-icon" title="grid-three-up" aria-hidden="true"></span>
+        <span>{{'mainMenu.Profile' | translate}}</span>
+      </button>
+      <button mat-menu-item (click)="router.navigateByUrl('/settings#preferences')">
+        <span class="oi oi-cog exentric-icon" title="cog" aria-hidden="true"></span>
+        <span>{{'mainMenu.Settings' | translate}}</span>
+      </button>
+
+      <button mat-menu-item (click)="router.navigateByUrl('/grants')">
+        <span class="oi oi-key exentric-icon" title="Persisted Grants" aria-hidden="true"></span>
+        <span>Grants</span>
+      </button>
+
+      <button mat-menu-item (click)="router.navigateByUrl('/discoverydocument')">
+        <span class="oi oi-file exentric-icon" title="file" aria-hidden="true"></span>
+        <span>Discovery Document</span>
+      </button>
+      <button mat-menu-item (click)="router.navigateByUrl('/myPersonaldata')">
+        <span class="oi oi-cloud-download exentric-icon" title="My personal data" aria-hidden="true"></span>
+        <span>Personal Data</span>
+      </button>
+      <button mat-menu-item (click)="router.navigateByUrl('/twofactorauthentication')">
+        <span class="oi oi-phone exentric-icon" title="Two-factor authentication" aria-hidden="true"></span>
+        <span>Two-Factor Authentication</span>
+      </button>
+
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>lock</mat-icon><span>{{'mainMenu.Logout' | translate}}</span>
+      </button>
+    </mat-menu>
+
+  </mat-toolbar>
+
+  <mat-sidenav-container class="app-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav #mainNav class="app-sidenav-nav mat-elevation-z6" [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [opened]="!mobileQuery.matches">
+      <mat-nav-list *ngIf="isUserLoggedIn">
+        <a mat-list-item routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="">
+          <mat-icon>dashboard</mat-icon>{{'mainMenu.Home' | translate}}
+        </a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewCustomers" routerLink="/customers">
+          <mat-icon>contacts</mat-icon>{{'mainMenu.Customers' | translate}}
+        </a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewProducts" routerLink="/products">
+          <mat-icon>local_shipping</mat-icon>{{'mainMenu.Products' | translate}}
+        </a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewOrders" routerLink="/orders">
+          <mat-icon>shopping_cart</mat-icon>{{'mainMenu.Orders' | translate}}
+        </a>
+
+        <!-- <a mat-list-item routerLinkActive="active" *ngIf="canViewGrants" routerLink="/Grants"><mat-icon>shopping_cart</mat-icon>Grants</a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewDiscoveryDocument" routerLink="/DiscoveryDocument"><mat-icon>shopping_cart</mat-icon>Discovery Document</a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewMyProfile" routerLink="/MyProfile"><mat-icon>shopping_cart</mat-icon>My Profile</a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewMyPersonalData" routerLink="/MyPersonalData"><mat-icon>shopping_cart</mat-icon>My Personal Data</a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewTwoFactorAuthentication" routerLink="/TwoFactorAuthentication"><mat-icon>shopping_cart</mat-icon>Two Factor Authentication</a>
+        <a mat-list-item routerLinkActive="active" *ngIf="canViewChangePassword" routerLink="/ChangePassword"><mat-icon>shopping_cart</mat-icon>Change Password</a> -->
+        <mat-expansion-panel *ngIf="canViewUsers || canViewRoles" #admin [class.mat-elevation-z0]="!admin.expanded">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="oi oi-credit-card exentric-icon" title="credit-card" aria-hidden="true"></span>
+              Admin
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <a mat-list-item routerLinkActive="active" *ngIf="canViewUsers" routerLink="/admin/users">
+            <span class="oi oi-person exentric-icon" title="Users" aria-hidden="true"></span>
+            Users
+          </a>
+          <a mat-list-item routerLinkActive="active" *ngIf="canViewRoles" routerLink="/admin/roles">
+            <span class="oi oi-lock-locked exentric-icon" title="Roles" aria-hidden="true"></span>
+            Roles
+          </a>
+
+          <a mat-list-item routerLinkActive="active" *ngIf="canViewClients" routerLink="/admin/clients">
+            <span class="oi oi-monitor exentric-icon" title="Clients" aria-hidden="true"></span>
+            Clients
+          </a>
+          <a mat-list-item routerLinkActive="active" *ngIf="canViewIdentityResources"
+            routerLink="/admin/identityresources">
+            <span class="oi oi-tags exentric-icon" title="Identity Resources" aria-hidden="true"></span>
+            Identity Resources
+          </a>
+          <a mat-list-item routerLinkActive="active" *ngIf="canViewApiResources" routerLink="/admin/apiresources">
+            <span class="oi oi-cloud exentric-icon" title="Api Resources" aria-hidden="true"></span>
+            Api Resources
+          </a>
+          <a mat-list-item routerLinkActive="active" *ngIf="canViewPersistedGrants" routerLink="/admin/persistedgrants">
+            <span class="oi oi-key exentric-icon" title="Persisted Grants" aria-hidden="true"></span>
+            Persisted Grants
+          </a>
+        </mat-expansion-panel>
+      </mat-nav-list>
+      <mat-nav-list>
+        <a mat-list-item routerLinkActive="active" routerLink="/about">
+          <span class="oi oi-ellipses exentric-icon" title="ellipses" aria-hidden="true"></span>
+          {{'mainMenu.About' | translate}}
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div fxLayout="column" fxFill>
+        <div id="mainContent" fxFlex>
+          <router-outlet></router-outlet>
+        </div>
+        <app-footer></app-footer>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
+</div>
+
+<ngx-toasta></ngx-toasta>

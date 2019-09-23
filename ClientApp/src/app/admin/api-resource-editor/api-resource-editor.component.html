@@ -1,0 +1,31 @@
+<div class="column" style="display: flex; flex-direction: column;padding:2em;">
+
+    <mat-form-field>
+        <input matInput placeholder="Name">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Display Name">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Description">
+    </mat-form-field>
+    <mat-slide-toggle>Enabled</mat-slide-toggle>
+
+    <div class=".md-button">
+        <button *ngIf="canManageApi" mat-raised-button (click)="apiScopes()" color="primary">
+            manage api scopes
+        </button>
+        <button *ngIf="canManageApi" mat-raised-button (click)="apiSecrets()" color="primary">
+            manage api secrets
+        </button>
+        <button *ngIf="canManageApi" mat-raised-button (click)="apiProperties()" color="primary">
+            manage api resource properties
+        </button>
+    </div>
+</div>
+<h2 class=".mat-display-4">Claims</h2>
+<mat-grid-list cols="2" rowHeight="2:1" *ngFor="let claim of claims">
+    <mat-grid-tile>
+        <button mat-button>{{claim}}</button>
+    </mat-grid-tile>
+</mat-grid-list>
